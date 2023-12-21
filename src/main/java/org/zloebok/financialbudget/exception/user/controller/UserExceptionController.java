@@ -34,16 +34,14 @@ public class UserExceptionController {
     public ResponseEntity<ExceptionDetails> UserConstraintValidationExceptionHandling
             (UserConstraintValidationException exception) {
         ExceptionDetails exceptionDetails = null;
-        TransactionSystemException transactionSystemException = null;
+        TransactionSystemException transactionSystemException;
 
         if (exception.getCause() != null) {
             transactionSystemException = (TransactionSystemException) exception.getCause();
 
-            if (transactionSystemException.getRootCause() instanceof ConstraintViolationException) {
-                ConstraintViolationException constraintViolationException =
-                        (ConstraintViolationException) transactionSystemException.getRootCause();
+            if (transactionSystemException.getRootCause() instanceof ConstraintViolationException constraintViolationException) {
 
-                exceptionDetails = exceptionDetails.builder()
+                exceptionDetails = ExceptionDetails.builder()
                         .message(exception.getMessage() + " | Cause: " + constraintViolationException.getMessage())
                         .exceptionName(exception.getClass().getSimpleName())
                         .httpStatus(HttpStatus.BAD_REQUEST)
@@ -54,7 +52,7 @@ public class UserExceptionController {
             }
         }
         
-        exceptionDetails = exceptionDetails.builder()
+        exceptionDetails = ExceptionDetails.builder()
                 .message(exception.getMessage())
                 .exceptionName(exception.getClass().getSimpleName())
                 .httpStatus(HttpStatus.BAD_REQUEST)
