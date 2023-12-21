@@ -1,7 +1,11 @@
 package org.zloebok.financialbudget.api.user.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+import org.zloebok.financialbudget.exception.user.UserConstraintValidationException;
+import org.zloebok.financialbudget.exception.user.UserNotFoundException;
 import org.zloebok.financialbudget.user.dto.UserDto;
 import org.zloebok.financialbudget.user.mapper.UserMapper;
 import org.zloebok.financialbudget.user.repository.UserRepository;
@@ -11,13 +15,24 @@ import org.zloebok.financialbudget.user.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDto getUserByUsername(String username) {
-        return userMapper.EntityToDto(userRepository.findByUsername(username).get());
+        return userMapper.EntityToDto
+                (userRepository.findByUsername(username)
+                        .orElseThrow(() -> new UserNotFoundException("User did not find by username: " + username)));
     }
 
     public void saveUser(UserDto user) {
-        userRepository.save(userMapper.DtoToEntity(user));
-    }
+        try {
+            if (user.getPassword() == null) {
+                throw new UserConstraintValidationException("User can not be null");
+            }
 
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(userMapper.DtoToEntity(user));
+        } catch (TransactionSystemException transactionSystemException) {
+            throw new UserConstraintValidationException("User validation exception", transactionSystemException);
+        }
+    }
 }

@@ -1,6 +1,9 @@
 package org.zloebok.financialbudget.user.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,10 +22,14 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
+    @NotNull
     private String username;
+    @NotNull
     private String password;
+    @Email
     private String email;
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Role role;
 
     @Override
