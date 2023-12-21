@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
+import org.zloebok.financialbudget.api.financialCondition.service.FinancialConditionService;
 import org.zloebok.financialbudget.exception.user.UserConstraintValidationException;
 import org.zloebok.financialbudget.exception.user.UserNotFoundException;
 import org.zloebok.financialbudget.user.dto.UserDto;
+import org.zloebok.financialbudget.user.entity.UserEntity;
 import org.zloebok.financialbudget.user.mapper.UserMapper;
 import org.zloebok.financialbudget.user.repository.UserRepository;
 
@@ -16,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final FinancialConditionService financialConditionService;
 
     public UserDto getUserByUsername(String username) {
         return userMapper.EntityToDto
@@ -30,7 +33,11 @@ public class UserService {
             }
 
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(userMapper.DtoToEntity(user));
+
+            UserEntity entity = userMapper.DtoToEntity(user);
+            userRepository.save(entity);
+
+            financialConditionService.saveFinancialConditionByUser(entity);
         } catch (TransactionSystemException transactionSystemException) {
             throw new UserConstraintValidationException("User validation exception", transactionSystemException);
         }
