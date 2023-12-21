@@ -38,6 +38,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/api/assets").authenticated()
+                        .requestMatchers("/api/liabilities").authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin ->

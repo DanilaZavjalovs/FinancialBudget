@@ -9,12 +9,18 @@ import org.zloebok.financialbudget.user.entity.UserEntity;
 @Service
 @AllArgsConstructor
 public class FinancialConditionService {
-    private final FinancialConditionRepository repository;
+    private final FinancialConditionRepository financialConditionRepository;
 
     public void saveFinancialConditionByUser(UserEntity entity) {
         FinancialConditionEntity financialCondition = new FinancialConditionEntity();
         financialCondition.setUser(entity);
 
-        repository.save(financialCondition);
+        financialConditionRepository.save(financialCondition);
+    }
+
+    public FinancialConditionEntity findFinancialConditionByUserId(UserEntity entity) {
+        FinancialConditionEntity financialCondition = financialConditionRepository.findByUser(entity).get();
+
+        return financialCondition;
     }
 }
