@@ -22,10 +22,13 @@ public class UserEntity implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
     @NotNull
+    @Column(unique = true)
     private String username;
     @NotNull
     private String password;
     @Email
+    @Column(unique = true)
+    @NotNull
     private String email;
     @Enumerated(EnumType.STRING)
     @NotNull

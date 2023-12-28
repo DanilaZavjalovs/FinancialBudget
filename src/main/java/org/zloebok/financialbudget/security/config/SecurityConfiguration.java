@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/assets").authenticated()
                         .requestMatchers("/api/liabilities").authenticated()
+                        .requestMatchers("/").authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin ->
