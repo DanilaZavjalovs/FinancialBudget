@@ -1,4 +1,4 @@
-package org.zloebok.financialbudget.finance.liabilities.entity;
+package org.zloebok.financialbudget.finance.expense.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Table
 @Data
-public class LiabilitiesEntity {
+public class ExpenseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
